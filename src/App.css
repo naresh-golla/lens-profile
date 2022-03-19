@@ -1,38 +1,128 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.header-logo-wallet{
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+  padding: 10px;
+}
+.logo{
+  font-size: 64px;
+}
+.wallet>a>div, .wallet>div{
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+.wallet .ant-card-meta-title{
+ font-size: 20px;
+}
+.center-cont {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+.center-cont > div{
+  text-align: center;
+  padding-top: 80px;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.center-cont h2{
+  background: linear-gradient(135deg, #CB5EEE 0%, #4BE1EC 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-box-decoration-break: clone;
+    font-size: 40px;
+    font-weight: 800;
+}
+.center-cont h4{
+  color: #fff;
+  font-size: 20px;
+  padding-top: 50px;
+}
+.center-child {
+  padding-top: 50px;
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+}
+.connect-btn{
+  height: 64px !important;
+  width: 250px;
+}
+.connect-btn>span{
+  font-size: 22px;
 }
 
-.App-link {
-  color: #61dafb;
+.switchNetwork{
+  min-height: 100vh;
+  text-align: center;
+  padding-top: 180px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.switchNetwork h2{
+  background: linear-gradient(135deg, #2F80ED 0%, #B2FFDA 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-box-decoration-break: clone;
+}
+
+.header-logo-wallet .logo {
+  font-size: 30px;
+  font-weight: 800;
+    background: linear-gradient(135deg, #FFCC33 0%, #E233FF 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-box-decoration-break: clone;
+}
+.header-logo-wallet .wallet .ant-card{
+  height: 85px;
+  background: linear-gradient(135deg, #2F80ED 0%, #B2FFDA 100%);
+    border: none;
+    border-radius: 100px;
+}
+.header-logo-wallet .wallet .ant-card .ant-card-cover{
+  padding-left: 20px;
+}
+.header-logo-wallet .wallet .ant-card .ant-card-body{
+  padding-left: 12px;
+  font-weight: 600;
+  font-size: 22px;
+}
+.header-logo-wallet .wallet .ant-card .ant-card-cover>div{
+  height: 45px !important;
+}
+.App{
+  background:#131415;
+}
+.center-child .ant-btn-primary,
+.switchNetwork .ant-btn-primary{
+  background: linear-gradient(163deg, #2F80ED 0%, #B2FFDA 100%);
+  font-weight: 600;
+  color: unset;
+}
+@media screen and (max-width:780px){
+  .header-logo-wallet{
+    flex-direction: column;
   }
-  to {
-    transform: rotate(360deg);
+  .wallet{
+    padding-top: 30px;
+  }
+  .center-cont{
+    min-height: 100vh;
+  }
+  .center-cont > div{
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-top: 20px;
+  }
+  .center-cont h2{
+    font-size: 30px;
+  }
+  .center-cont h4{
+    padding-top: 10px;
   }
 }
