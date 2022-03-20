@@ -13,7 +13,7 @@
   padding: 10px;
 }
 .wallet .ant-card-meta-title{
- font-size: 20px;
+ font-size: 15px;
 }
 .center-cont {
   width: 100%;
@@ -79,21 +79,22 @@
     -webkit-box-decoration-break: clone;
 }
 .header-logo-wallet .wallet .ant-card{
-  height: 85px;
+  height: 55px;
   background: linear-gradient(135deg, #2F80ED 0%, #B2FFDA 100%);
     border: none;
     border-radius: 100px;
 }
 .header-logo-wallet .wallet .ant-card .ant-card-cover{
-  padding-left: 20px;
+  padding-left: 8px;
 }
 .header-logo-wallet .wallet .ant-card .ant-card-body{
+  padding: 10px;
   padding-left: 12px;
   font-weight: 600;
-  font-size: 22px;
+  font-size: 14px;
 }
 .header-logo-wallet .wallet .ant-card .ant-card-cover>div{
-  height: 45px !important;
+  height: 25px !important;
 }
 .App{
   background:#131415;
@@ -103,6 +104,47 @@
   background: linear-gradient(163deg, #2F80ED 0%, #B2FFDA 100%);
   font-weight: 600;
   color: unset;
+}
+.nft-wrapper{
+  color: white;
+  padding-left: 20px;
+  min-height: 100vh;
+}
+.nft-wrapper label{
+  color:white
+}
+.nft-wrapper .ant-image{
+  width: 200px;
+    padding: 10px;
+}
+.nft-wrapper>.ant-spin{
+  width: 100% !important;
+  text-align: center;
+}
+.nft-wrapper>div>img{
+  border-radius: 10px;
+}
+.nft-wrapper .NoNft{
+  text-align: center;
+  width: 100%;
+  padding-top: 80px;
+  color: white;
+  font-size: 25px;
+  background: linear-gradient(135deg, #2F80ED 0%, #B2FFDA 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-box-decoration-break: clone;
+}
+.buttonSection {
+  display: flex;
+}
+.buttonSection div {
+  margin-left: 25px;
+  margin-bottom: 25px;
+}
+.nft-wrapper>.ant-form{
+  margin-top:60px;
 }
 @media screen and (max-width:780px){
   .header-logo-wallet{

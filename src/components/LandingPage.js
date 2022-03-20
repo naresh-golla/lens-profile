@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useContext} from "react";
 import "antd/dist/antd.css";
 import { Card, Button } from "antd";
 import { networks } from "../utils/networks";
 import { generateChallenge } from "./generate-challenge"
 import { authenticate } from './authenticate'
 import { ethers } from 'ethers';
-// import contractAbi from "./utils/contractAbi.json"
+import { createProfile } from "./profile/create-profile";
+import { refreshAuth } from "./refresh-authenticate";
+import { get, isArray, map, forEach } from "lodash";
+import { Menu, Layout, notification} from "antd";
+import { getUsersNfts } from "./get-users-nfts";
+import { Link,Outlet  } from "react-router-dom";
+import {UserDataContext} from "../allContextProvider"
 
 
 const { Meta } = Card;
@@ -15,6 +21,50 @@ const LandingPage = () => {
   const [network, setNetwork] = useState('');
   const [Loading, setLoading] = useState(false);
 
+  const user_Data_Context = useContext(UserDataContext)
+  console.log("user_Data_Context",user_Data_Context)
+
+  const useInterval = (callback, delay) => {
+    const savedCallback = React.useRef();
+  
+    React.useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+  
+    React.useEffect(() => {
+      const tick = () => {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  };
+
+
+  useInterval(() => {
+    let refreshToken = localStorage.getItem("refreshToken")
+    currentAccount && refreshToken && console.log(refreshAuth(refreshToken))
+  }, 600000);
+
+  const openSuccessNotification = (message,description) => {
+    notification.success({
+      message,
+      description,
+      placement:"topRight"
+    });
+  };
+
+  const openErrorNotification = (message,description) => {
+    notification.error({
+      message,
+      description,
+      placement:"topRight"
+    });
+  };
+
+  
   useEffect(() => {
     checkIfWalletIsConnected();
   }, [])
@@ -33,7 +83,7 @@ const LandingPage = () => {
 
     const accounts = await ethereum.request({ method: "eth_accounts" });
     if (accounts.length !== 0) {
-      const account = accounts[0];
+      const account = accounts[0].trim();
       console.log("account",account)
       setCurrentAccount(account)
 
@@ -71,7 +121,7 @@ const LandingPage = () => {
       } else {
         const accounts = await ethereum.request({ method: "eth_requestAccounts" });
         if (accounts.length !== 0) {
-          const account = accounts[0];
+          const account = accounts[0].trim();
           console.log("Connected with -->", account);
           setCurrentAccount(account)
 
@@ -112,6 +162,59 @@ const LandingPage = () => {
     )
   }
 
+  const handleCreateProfile =async ()=>{
+    const profileObj={
+      handle: "avatar",
+      profilePictureUri: "https://avatarfiles.alphacoders.com/888/thumb-1920-88879.gif",
+      followNFTURI: null,
+      followModule: null
+    }
+    try{
+      const res = await createProfile(profileObj);
+      console.log("red",res)
+      let data = get(res, "data", {});
+      const {txHash,reason} = data.createProfile
+      if(txHash){
+        openSuccessNotification("Profile Created",txHash)
+      }else if(reason){
+        openErrorNotification("Profile Not Created",reason)
+      }
+      console.log("data-",data)
+    }catch(error){
+      console.log("create Profile",error.message)
+      openErrorNotification("Error",error.message)
+    }
+
+  }
+  function toHex(str) {
+    var result = '';
+    for (var i=0; i<str.length; i++) {
+      result += str.charCodeAt(i).toString(16);
+    }
+    return result;
+  }
+
+  const showNfts = async ()=>{
+    const nftObj = {
+      ownerAddress:currentAccount,
+      chainIds:[80001],
+      limit: 20
+    }
+    try {
+      const res = await getUsersNfts(nftObj)
+      let data = await get(res, ["data","nfts","items"], null);
+      console.log(data)
+      user_Data_Context.setUserData(prevState => ({
+        ...prevState,
+        nftData: data
+      }));
+      console.log("nft",res)
+    } catch (error) {
+      openErrorNotification("Error while loading NFT's",error.message)
+      console.log("nft",error.message)
+    }
+  }
+
   const renderProfile = ()=>{
       if(network !== "Polygon Mumbai Testnet"){
         return (
@@ -121,7 +224,24 @@ const LandingPage = () => {
             </div>
         );
       }
-      return ""
+      return (
+        <div>
+          <div className="buttonSection">
+            <div>
+              <Link to="/create-profile">
+                <Button className='cta-button' type="primary" shape="round" size="large">create profile</Button>
+              </Link>
+            </div>
+            <div>
+              <Link to="/nft">
+                <Button className='cta-button' type="primary" shape="round" size="large"  onClick={showNfts}>My NFT's</Button>
+              </Link>
+            </div>
+          </div>
+          <Outlet />
+        </div>
+        
+      )
   }
 
   const switchNetwork = async () => {

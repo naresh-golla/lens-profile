@@ -3,10 +3,28 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+import RenderNfts from './components/RenderNfts';
+import {UserDataProvider} from "./allContextProvider";
+import CreateProfile from './components/CreateProfile';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <UserDataProvider>
+      <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />}>
+          <Route path="nft" element={<RenderNfts />} />        
+          <Route path="create-profile" element={<CreateProfile />} />        
+        </Route>
+      </Routes>
+      </BrowserRouter>      
+    </UserDataProvider>
+
   </React.StrictMode>,
   document.getElementById('root')
 );
