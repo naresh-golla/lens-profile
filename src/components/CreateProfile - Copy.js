@@ -38,16 +38,73 @@ const CreateProfile = () => {
 
   const [fileUrl, updateFileUrl] = useState(null);
 
+  // useEffect(()=>{
+  //   if(fileUrl != null ){
+  //     let obj ={
+  //       "file" : fileUrl
+  //     }
+  //     const pinataResponse =  pinFileToIPFS(obj)
+  //     if (!pinataResponse.success) {
+  //       console.log("Something went wrong while uploading your tokenURI")
+  //     } 
+  //     console.log("pinataUrl", pinataResponse.pinataUrl)
+  //   }
+  // },[fileUrl])
+
+  // const onChange = async (e)=> {
+  //   const file = e.target.files[0]
+    
+  //   try {
+  //     const added = await client.add(file)
+  //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
+  //     updateFileUrl(url)
+  //   } catch (error) {
+  //     console.log('Error uploading file: ', error)
+  //   }  
+  // }
+
+  // async function onChange(e) {
+  //   const file = e.target.files[0]
+  //   let ipfs = await create({
+  //     url: "https://api.pinata.cloud/psa",
+  //     repo: 'file-path' + Math.random()
+  //   })
+  //   const { cid } = await ipfs.add(file)
+  //   const url = `https://gateway.pinata.cloud/ipfs/${cid.string}`
+  //   console.log(url)
+  // }
+
    const onChange = async(e)=>{
       const file = await e.target.files[0];
       updateFileUrl(file)
+      // let strFile = JSON.stringify(file)
+
+      // console.log("file",file)
+
+      // let obj ={
+      //   "file" : file
+      // }
+
+      // const getIpfsUrl =  await pinFileToIPFS0(key,secret,file);
+      // if (!getIpfsUrl.success) {
+      //   console.log("Something went wrong while uploading your image")
+      // } 
+      // let {response} = getIpfsUrl;
+      // console.log("response", response, "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash)        
+      
+
     }
    
 
     const onFinish = async (values) => {
 
       let {handle} = values.user
-
+      const profileObj={
+        handle,
+        profilePictureUri: profilePicUrl,
+        followNFTURI: null,
+        followModule: null
+      }
       if(handle.length === 0){        
         openErrorNotification("validation","Please input your handle!")
         return
@@ -61,12 +118,8 @@ const CreateProfile = () => {
         console.log("response", response, "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash)
         let profilePicUrl = "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash;
 
-        const profileObj={
-          handle,
-          profilePictureUri: profilePicUrl,
-          followNFTURI: null,
-          followModule: null
-        }
+        
+        // let {handle,name,location,twitterUrl,website,bio} = values.user
 
         try{
           const res = await createProfile(profileObj);
@@ -85,6 +138,40 @@ const CreateProfile = () => {
           openErrorNotification("Error",error.message)
         }
     };
+
+    const normFile = (e) => {
+        console.log('Upload event:', e);      
+        if (Array.isArray(e)) {
+          return e[0] && e[0].fileList;
+        }
+        return e && e.fileList;
+    };
+
+
+    // const handleCreateProfile =async ()=>{
+    //   const profileObj={
+    //     handle: "avatar",
+    //     profilePictureUri: "https://avatarfiles.alphacoders.com/888/thumb-1920-88879.gif",
+    //     followNFTURI: null,
+    //     followModule: null
+    //   }
+    //   try{
+    //     const res = await createProfile(profileObj);
+    //     console.log("red",res)
+    //     let data = get(res, "data", {});
+    //     const {txHash,reason} = data.createProfile
+    //     if(txHash){
+    //       openSuccessNotification("Profile Created",txHash)
+    //     }else if(reason){
+    //       openErrorNotification("Profile Not Created",reason)
+    //     }
+    //     console.log("data-",data)
+    //   }catch(error){
+    //     console.log("create Profile",error.message)
+    //     openErrorNotification("Error",error.message)
+    //   }
+  
+    // }
 
     return (
         <div className="nft-wrapper">
