@@ -11,6 +11,7 @@ import {
 import RenderNfts from './components/RenderNfts';
 import {UserDataProvider} from "./allContextProvider";
 import CreateProfile from './components/CreateProfile';
+import RenderProfiles from './components/RenderProfiles';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -20,6 +21,7 @@ ReactDOM.render(
         <Route path="/" element={<App />}>
           <Route path="nft" element={<RenderNfts />} />        
           <Route path="create-profile" element={<CreateProfile />} />        
+          <Route path="profiles" element={<RenderProfiles />} />        
         </Route>
       </Routes>
       </BrowserRouter>      

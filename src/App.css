@@ -110,8 +110,10 @@
   padding-left: 20px;
   min-height: 100vh;
 }
-.nft-wrapper label{
-  color:white
+.nft-wrapper .ant-form-item-label > label,
+.nft-wrapper .ant-form-item-label > label .ant-form-item-tooltip,
+.nft-wrapper .ant-form-item{
+  color:white !important;
 }
 .nft-wrapper .ant-image{
   width: 200px;

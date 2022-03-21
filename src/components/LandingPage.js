@@ -8,10 +8,12 @@ import { ethers } from 'ethers';
 import { createProfile } from "./profile/create-profile";
 import { refreshAuth } from "./refresh-authenticate";
 import { get, isArray, map, forEach } from "lodash";
-import { Menu, Layout, notification} from "antd";
+// import { Menu, Layout, notification} from "antd";
 import { getUsersNfts } from "./get-users-nfts";
 import { Link,Outlet  } from "react-router-dom";
 import {UserDataContext} from "../allContextProvider"
+import { getProfiles } from "./get-profiles";
+import { openErrorNotification, openSuccessNotification } from "../utils/ResuableFunctions";
 
 
 const { Meta } = Card;
@@ -48,21 +50,21 @@ const LandingPage = () => {
     currentAccount && refreshToken && console.log(refreshAuth(refreshToken))
   }, 600000);
 
-  const openSuccessNotification = (message,description) => {
-    notification.success({
-      message,
-      description,
-      placement:"topRight"
-    });
-  };
+  // const openSuccessNotification = (message,description) => {
+  //   notification.success({
+  //     message,
+  //     description,
+  //     placement:"topRight"
+  //   });
+  // };
 
-  const openErrorNotification = (message,description) => {
-    notification.error({
-      message,
-      description,
-      placement:"topRight"
-    });
-  };
+  // const openErrorNotification = (message,description) => {
+  //   notification.error({
+  //     message,
+  //     description,
+  //     placement:"topRight"
+  //   });
+  // };
 
   
   useEffect(() => {
@@ -215,6 +217,18 @@ const LandingPage = () => {
     }
   }
 
+  const handleRenderProfiles = async ()=>{
+    let obj = { ownedBy: [currentAccount], limit: 10 }
+    try {
+      const res = await getProfiles(obj)
+      let data = await get(res, ["data","profiles","items"], null);
+      console.log("profiles",data)
+    } catch (error) {
+      openErrorNotification("Error while loading Profile's",error.message)
+      console.log("profiles",error.message)
+    }
+  }
+
   const renderProfile = ()=>{
       if(network !== "Polygon Mumbai Testnet"){
         return (
@@ -234,7 +248,12 @@ const LandingPage = () => {
             </div>
             <div>
               <Link to="/nft">
-                <Button className='cta-button' type="primary" shape="round" size="large"  onClick={showNfts}>My NFT's</Button>
+                <Button className='cta-button' type="primary" shape="round" size="large"  onClick={showNfts}>My NFTs</Button>
+              </Link>
+            </div>
+            <div>
+              <Link to="/profiles">
+                <Button className='cta-button' type="primary" shape="round" size="large" onClick={handleRenderProfiles}>My Profiles</Button>
               </Link>
             </div>
           </div>
