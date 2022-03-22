@@ -3,6 +3,9 @@ import { UserDataContext } from "../allContextProvider"
 import { Image } from 'antd';
 import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import { getUsersNfts } from './get-users-nfts';
+import { get } from 'lodash';
+import { openErrorNotification } from '../utils/ResuableFunctions';
 
 const RenderNfts = () => {
 
@@ -10,11 +13,36 @@ const RenderNfts = () => {
 
     const user_Data_Context = useContext(UserDataContext)
     console.log("user_Data_Context--NFT-->", user_Data_Context)
-    let {nftData} = user_Data_Context.userData
+    let {userAddress} = user_Data_Context.userData
+
+
+    // useEffect(()=>{
+    //     setNft(nftData)
+    // },[nftData])
 
     useEffect(()=>{
-        setNft(nftData)
-    },[nftData])
+        showNfts();
+    })
+
+    let currentAccount = sessionStorage.getItem("currentAccount")
+
+    const showNfts = async () => {
+        const nftObj = {
+          ownerAddress: userAddress || currentAccount,
+          chainIds: [80001],
+          limit: 20
+        }
+        try {
+          const res = await getUsersNfts(nftObj)
+          let data = await get(res, ["data", "nfts", "items"], null);
+          console.log(data)
+          setNft(data)
+          console.log("nft", res)
+        } catch (error) {
+          openErrorNotification("Error while loading NFT's", error.message)
+          console.log("nft", error.message)
+        }
+      }
 
     const antIcon = <LoadingOutlined style={{ fontSize: 50 , textAlign:"center"}} spin />
 
@@ -32,7 +60,7 @@ const RenderNfts = () => {
                             })
                         )}
                     </Image.PreviewGroup>
-                ) : (<div className="NoNft">No Nft's available in Mumbai TestNet</div>) 
+                ) : (<div className="NoNft">No Nft's available for this connected wallet in Mumbai TestNet</div>) 
 
             }
         </div>

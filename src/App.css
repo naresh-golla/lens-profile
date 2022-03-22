@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 1px 10px;
 }
 .logo{
   font-size: 64px;
@@ -96,8 +96,9 @@
 .header-logo-wallet .wallet .ant-card .ant-card-cover>div{
   height: 25px !important;
 }
-.App{
-  background:#131415;
+.App,.ant-layout,.ant-layout-footer{
+  background:#001529 !important;
+  color: #fff !important;
 }
 .center-child .ant-btn-primary,
 .switchNetwork .ant-btn-primary{
@@ -119,7 +120,7 @@
   width: 200px;
     padding: 10px;
 }
-.nft-wrapper>.ant-spin{
+.nft-wrapper .ant-spin{
   width: 100% !important;
   text-align: center;
 }
@@ -148,6 +149,26 @@
 .nft-wrapper>.ant-form{
   margin-top:60px;
 }
+.ant-menu-vertical .ant-menu-submenu-selected, .ant-menu-vertical-left .ant-menu-submenu-selected, .ant-menu-vertical-right .ant-menu-submenu-selected {
+  color: #1890ff !important;
+}
+.profile-wrapper{
+  padding-top: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.profile-wrapper .ant-card{
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+.link-class{
+  position: absolute;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  height: 250px;
+}
 @media screen and (max-width:780px){
   .header-logo-wallet{
     flex-direction: column;
@@ -156,6 +177,7 @@
     padding-top: 30px;
   }
   .center-cont{
+    padding-top: 100px;
     min-height: 100vh;
   }
   .center-cont > div{
@@ -168,5 +190,20 @@
   }
   .center-cont h4{
     padding-top: 10px;
+  }
+  .ant-layout-sider {
+    position: fixed !important;
+    z-index: 999 !important;
+    min-height: 100vh !important;
+  }
+  .ant-layout-has-sider{
+    position: relative;
+  }
+  .ant-layout-sider-trigger{
+    position: absolute !important;
+  }
+  .profile-wrapper{
+    padding-left: 80px;
+    padding-top: 100px;
   }
 }
