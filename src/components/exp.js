@@ -2,8 +2,10 @@
 const axios = require('axios');
 const fs = require('fs');
 const FormData = require('form-data');
+const pinataApiKey = "53d14302cb4bb73446a1"
+const pinataSecretApiKey = "cf7e6b5d9f9a826fe8ba03652b63ffb03aab2255b1f07dadb0b90e5e3066741c"
 
-export const pinFileToIPFS0 = (pinataApiKey, pinataSecretApiKey, file) => {
+export const pinFileToIPFS0 = (file) => {
     const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
 
     //we gather a local file for this example, but any valid readStream source will work here.

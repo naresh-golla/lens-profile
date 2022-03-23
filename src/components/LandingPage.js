@@ -425,7 +425,8 @@ const LandingPage = () => {
         <div>
           {!currentAccount && renderNotConnectedContainer()}
           {/* {currentAccount && renderProfile()} */}
-          <Outlet />
+          {currentAccount &&  <Outlet />}
+         
         </div>
         <Footer style={{ textAlign: 'center' }}>Lens Profile</Footer>
       </Layout>

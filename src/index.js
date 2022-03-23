@@ -20,7 +20,7 @@ ReactDOM.render(
     <UserDataProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />}>
+          <Route exact path="/" element={<App />}>
             <Route path="nft" element={<RenderNfts />} />        
             <Route path="create-profile" element={<CreateProfile />} />        
             <Route path="profiles" element={<Profile />} >

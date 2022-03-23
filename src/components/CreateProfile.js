@@ -13,9 +13,6 @@ import { pinFileToIPFS0 } from './exp';
 
 // const client = create('https://ipfs.infura.io:5001/api/v0')
 
-const key = "53d14302cb4bb73446a1"
-const secret = "cf7e6b5d9f9a826fe8ba03652b63ffb03aab2255b1f07dadb0b90e5e3066741c"
-
 const layout = {
     labelCol: {
       span: 8,
@@ -23,8 +20,8 @@ const layout = {
     wrapperCol: {
       span: 8,
     },
-  };
-  const validateMessages = {
+};
+const validateMessages = {
     required: '${label} is required!',
     types: {
       email: '${label} is not a valid email!',
@@ -33,7 +30,7 @@ const layout = {
     number: {
       range: '${label} must be between ${min} and ${max}',
     },
-  };
+};
 const CreateProfile = () => {
 
   const [fileUrl, updateFileUrl] = useState(null);
@@ -53,7 +50,7 @@ const CreateProfile = () => {
         return
       }
         console.log("values",values);
-        const getIpfsUrl = await pinFileToIPFS0(key,secret,fileUrl);
+        const getIpfsUrl = await pinFileToIPFS0(fileUrl);
         if (!getIpfsUrl.success) {
           console.log("Something went wrong while uploading your image")
         } 

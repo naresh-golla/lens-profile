@@ -6,6 +6,7 @@ import { get, isNil, trimEnd } from "lodash"
 import { Link, Outlet } from 'react-router-dom';
 import { getProfiles } from './get-profiles';
 import { openErrorNotification } from '../utils/ResuableFunctions';
+import defImage from "../assets/lp.jpg"
 
 const { Meta } = Card;
 
@@ -57,6 +58,7 @@ const RenderProfiles = () => {
             <div className="profile-wrapper">
               {
                 profiles.map((item, index) => {
+                  let bio= (item.bio !== "" && item.bio !== null) && item.bio.slice(0,50) + "..." ;
                   return (
                     <Card
                       key={index}
@@ -66,7 +68,7 @@ const RenderProfiles = () => {
                           <Link to={item.id} target="_blank" className="link-class"> </Link>
                           <img
                             alt="Cover Pic"
-                            src={(!isNil(item.coverPicture)) ? item.coverPicture : (!isNil(item.picture)) ? item.picture.original.url : defaultImg}
+                            src={(!isNil(item.picture)) ? item.picture.original.url : defImage}
                           />
                         </>
                       }
@@ -93,9 +95,9 @@ const RenderProfiles = () => {
                       ]}
                     >
                       <Meta
-                        avatar={<Avatar src={(!isNil(item.picture)) ? item.picture.original.url : defaultImg} />}
+                        avatar={<Avatar src={(!isNil(item.picture)) ? item.picture.original.url : defImage} />}
                         title={item.handle}
-                        description={item.bio}
+                        description={bio}
                       />
                     </Card>
                   )
