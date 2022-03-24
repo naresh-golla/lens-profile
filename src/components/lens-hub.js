@@ -1,4 +1,4 @@
-import { getSigner } from './ethers.service';
+import { getSigner } from './ethers-service';
 import { ethers } from 'ethers';
 
 // lens contract info can all be found on the deployed

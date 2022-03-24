@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { get, isNil, trimEnd } from "lodash"
+import React, { useContext, useEffect, useState } from 'react'
+import { get, isNil, trimEnd ,isObject } from "lodash"
 import { getProfiles } from './get-profiles';
 import { openErrorNotification, openSuccessNotification } from '../utils/ResuableFunctions';
 import "../css/ShowProfile.css"
@@ -7,7 +7,14 @@ import { Button, Tabs, Modal, Form, Input ,Spin} from 'antd';
 import { Link, Navigate, NavLink } from 'react-router-dom';
 import { pinFileToIPFS0 } from './exp';
 import { updateProfile } from './update-profile';
-import { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined, EditOutlined,PlusCircleOutlined } from '@ant-design/icons';
+import defImage from "../assets/lp.jpg"
+import coverImage from "../assets/cover.PNG"
+import { pinJSONToIPFS } from './pinataJsonToIpfs';
+import { createPostTypedData } from './create-post-typed-data';
+import { signedTypeData, splitSignature } from './ethers-service';
+import { lensHub } from './lens-hub';
+import { UserDataContext } from '../allContextProvider';
 
 
 const { TabPane } = Tabs;
@@ -37,8 +44,10 @@ const validateMessages = {
 const ShowProfile = () => {
   const [idData, setIdData] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isCPLoading, setCPIsLoading] = useState(false)
 
   const [visible, setVisible] = React.useState(false);
+  const [cpvisible, setcpVisible] = React.useState(false);
   const [confirmLoading, setConfirmLoading] = React.useState(false);
   const [modalText, setModalText] = React.useState('Content of the modal');
   const [fileUrl, updateFileUrl] = useState(null);
@@ -47,6 +56,11 @@ const ShowProfile = () => {
 
   let idUrl = window.location.pathname.slice(10)
   console.log("query idUrl", idUrl)
+
+  const user_Data_Context = useContext(UserDataContext)
+  console.log("user_Data_Context--NFT-->", user_Data_Context)
+  let {userAddress} = user_Data_Context.userData
+  let currentAccount = sessionStorage.getItem("currentAccount")
 
   const onChange = async (e) => {
     const file = await e.target.files[0];
@@ -83,6 +97,8 @@ const ShowProfile = () => {
     console.log('Clicked cancel button');
     setVisible(false);
     setIsLoading(false);
+    setCPIsLoading(false)
+    setcpVisible(false)
   };
 
 
@@ -119,12 +135,11 @@ const ShowProfile = () => {
       setSpinner(false)
       setIsLoading(false);
     }
-
   }
 
   const onFinish = async (values) => {
     setSpinner(true)
-    console.log("handle", values.user)
+    console.log("input values ", values.user)
     let valuesObj = values.user;
 
     let profilePicUrl = null;
@@ -145,8 +160,16 @@ const ShowProfile = () => {
     // assigning previous values to new feilds
     for (const prop of Object.keys(finalObj)) {
       if (prop in prevObj) {
-        if( finalObj[prop] === "" || finalObj[prop] === undefined){
-          finalObj[prop] = prevObj[prop];
+        console.log("prop-->",finalObj[prop])
+        console.log("prop-->",prop)
+        if( finalObj[prop] === "" || finalObj[prop] === undefined || finalObj[prop] === null){
+          if(isObject(prevObj[prop])){
+            console.log("propin ====",prevObj[prop],"jjjj",prevObj[prop].original.url)
+            finalObj[prop] = prevObj[prop].original.url
+          }else{
+            finalObj[prop] = prevObj[prop];            
+          }
+
         }
       }
     }
@@ -172,7 +195,7 @@ const ShowProfile = () => {
         setIsLoading(false);
         setTimeout(() => {
           window.location.reload();
-        }, 1000);
+        }, 1200);
         // setSuccessCallRender(!successCallRender)
       }
 
@@ -186,6 +209,73 @@ const ShowProfile = () => {
 
   }
 
+  const onPostFinish = async (values)=>{
+    // setSpinner(true)
+    let {post} = values.user
+    console.log("idData-->>",idData)
+    console.log("handle", values.user)
+    let obj = new Object();
+    obj.post = post
+    const resIpfsPost = await pinJSONToIPFS(obj)
+    console.log("resIpfsPost",resIpfsPost)
+    if(resIpfsPost.success){
+      let resIpfsPostUrl = await resIpfsPost.pinataUrl
+      console.log("resIpfsPost",resIpfsPostUrl)
+
+      let createPostReqObj = {
+        profileId: idUrl,
+        contentURI: resIpfsPostUrl,
+        collectModule: {
+          timedFeeCollectModule: {
+              amount: {
+                 currency: "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889",
+                 value: "0.01"
+               },
+               recipient: userAddress || currentAccount,
+               referralFee: 10.5
+           }
+        },
+        referenceModule: {
+            followerOnlyReferenceModule: false
+        }
+      } 
+      console.log("createPostReqObj",createPostReqObj)
+      const result = await createPostTypedData(createPostReqObj);
+      const typedData = result.data.createPostTypedData.typedData;
+      
+      const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
+      const { v, r, s } = splitSignature(signature);
+      
+      const tx = await lensHub.postWithSig({
+        profileId: typedData.value.profileId,
+        contentURI:typedData.value.contentURI,
+        collectModule: typedData.value.collectModule,
+        collectModuleData: typedData.value.collectModuleData,
+        referenceModule: typedData.value.referenceModule,
+        referenceModuleData: typedData.value.referenceModuleData,
+        sig: {
+          v,
+          r,
+          s,
+          deadline: typedData.value.deadline,
+        },
+      });
+      console.log("tx.hash",tx.hash);
+      // 0x64464dc0de5aac614a82dfd946fc0e17105ff6ed177b7d677ddb88ec772c52d3
+      // you can look at how to know when its been indexed here: 
+      //   - https://docs.lens.dev/docs/has-transaction-been-indexed
+    
+    
+    }else{
+      openSuccessNotification("Error","Something went Wrong")
+    }
+  }
+
+  const handleCreatePost = ()=>{
+    setCPIsLoading(!isCPLoading);
+    setcpVisible(!cpvisible)
+  }
+
   const antIcon = <LoadingOutlined style={{ fontSize: 50, textAlign: "center" }} spin />
 
   return (
@@ -197,7 +287,7 @@ const ShowProfile = () => {
             <>             
               <header class="showProfileHeader"
                 style={{
-                  backgroundImage: (!isNil(idData[0].coverPicture)) ? `url(${idData[0].coverPicture.original.url})` : `url(${defaultBGimg})`
+                  backgroundImage: (!isNil(idData[0].coverPicture)) ? `url(${idData[0].coverPicture.original.url})` : `url(${coverImage})`
                   // backgroundImage : `url(${defaultBGimg})`
                   // `url(${idData[0].coverPicture.original.url})`
                 }}
@@ -207,7 +297,7 @@ const ShowProfile = () => {
                   <div className="left col-lg-4">
                     <div className="photo-left">
                       <img alt="default cover" className="photo"
-                        src={(!isNil(idData[0].picture)) ? idData[0].picture.original.url : defaultImg}
+                        src={(!isNil(idData[0].picture)) ? idData[0].picture.original.url : defImage}
                       />
                     </div>
                     <h4 className="name">{idData[0].name}</h4>
@@ -247,8 +337,13 @@ const ShowProfile = () => {
                     </div>
                   </div>
                   <div className="right col-lg-8">
-                    <div className="editButton">
-                      <Button className='cta-button' type="primary" shape="round" size="large" loading={isLoading} onClick={handleEditProfile}>Edit Profile</Button>
+                    <div class="buttonList">
+                      <div className="">
+                        <Button className='cta-button' type="primary" shape="round" size="large" loading={isLoading} onClick={handleEditProfile}>Edit Profile <EditOutlined /></Button>
+                      </div>
+                      <div className="">
+                        <Button className='cta-button' type="primary" shape="round" size="large" loading={isCPLoading} onClick={handleCreatePost}>Create Post <PlusCircleOutlined /></Button>
+                      </div>                      
                     </div>
 
                     <Modal
@@ -319,6 +414,38 @@ const ShowProfile = () => {
                         </Form.Item>
                       </Form>
                     </Modal>
+                    
+                    <Modal
+                      title="Create Post"
+                      visible={cpvisible}
+                      onOk={handleOk}
+                      confirmLoading={confirmLoading}
+                      onCancel={handleCancel}
+                      maskClosable={false}
+                      closable={true}
+                    >
+                      <Form {...layout} name="nest-messages" onFinish={onPostFinish} validateMessages={validateMessages}>
+                        <Form.Item
+                          name={['user', 'post']}
+                          // tooltip="every one will be able to search you with handle"
+                          label="post"
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Please input your post!',
+                            },
+                          ]}
+                        >
+                           <Input.TextArea rows="5" />
+                        </Form.Item>
+                        <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                          <Button type="primary" htmlType="submit">
+                            Submit
+                          </Button>
+                        </Form.Item>
+                      </Form>
+                    </Modal>
+
 
                     <Tabs defaultActiveKey="1" onChange={callback}>
                       <TabPane tab="Publications" key="1">

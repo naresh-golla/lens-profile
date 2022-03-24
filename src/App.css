@@ -174,7 +174,13 @@
   position: absolute;
   z-index: 2;
 }
-
+.buttonList{
+  display: flex;
+  justify-content: flex-end;
+}
+.buttonList div{
+  margin-right: 20px;
+}
 .ant-modal-footer{
   display: none !important;
 }

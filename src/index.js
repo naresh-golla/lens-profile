@@ -27,6 +27,7 @@ ReactDOM.render(
               <Route path="/profiles" element={<RenderProfiles />} />
               <Route path=":profileId" element={<ShowProfile />} /> 
             </Route>
+            {/* <Route path="explore" element={<ExploreModule />} />    */}
           </Route>
         </Routes>
       </BrowserRouter>      

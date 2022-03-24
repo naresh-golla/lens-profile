@@ -13,8 +13,9 @@ const RenderNfts = () => {
 
     const user_Data_Context = useContext(UserDataContext)
     console.log("user_Data_Context--NFT-->", user_Data_Context)
+    
     let {userAddress} = user_Data_Context.userData
-
+   let currentAccount = sessionStorage.getItem("currentAccount")
 
     // useEffect(()=>{
     //     setNft(nftData)
@@ -24,7 +25,7 @@ const RenderNfts = () => {
         showNfts();
     })
 
-    let currentAccount = sessionStorage.getItem("currentAccount")
+ 
 
     const showNfts = async () => {
         const nftObj = {

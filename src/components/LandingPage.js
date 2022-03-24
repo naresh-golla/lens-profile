@@ -24,7 +24,8 @@ import {
   TeamOutlined,
   UserOutlined,
   HomeOutlined,
-  FileImageOutlined
+  FileImageOutlined,
+  SearchOutlined
 } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -319,8 +320,8 @@ const LandingPage = () => {
             <Menu.Item key="3"><Link to="/create-profile"><UserOutlined /> &nbsp;&nbsp;Create Profile </Link></Menu.Item>
             <Menu.Item key="4"><Link to="/profiles"> <TeamOutlined /> &nbsp;&nbsp;My Profiles</Link></Menu.Item>
           </SubMenu>
-          <Menu.Item key="6" icon={<FileOutlined />}>
-            Files
+          <Menu.Item key="6" icon={<SearchOutlined />}>
+            <Link to="/explore">Explore</Link>Explore
           </Menu.Item>
         </Menu>
       </Sider>
