@@ -4,7 +4,7 @@
     src: url("./assets/SEGOEUI.TTF");
 }
   
-#root,body,.ant-menu,.ant-modal-root{
+#root,body,.ant-menu,.ant-modal-root,.ant-layout,html{
   font-family: SegoeUI !important;
   font-weight: 500 !important;
   line-height: 1.5 !important;
@@ -266,6 +266,13 @@ h5.color-white{
   cursor: pointer !important;
 }
 
+.nested-comments .ant-comment-avatar img{
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden !important;
+  display: inline-block !important;
+}
 @media screen and (max-width:780px){
   .header-logo-wallet{
     flex-direction: column;

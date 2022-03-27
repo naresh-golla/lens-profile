@@ -1,13 +1,10 @@
-// this is showing you how you use it with react for example
-// if your using node or something else you can import using
-// @apollo/client/core!
 import { apolloClient } from './apollo-client';
 import { gql } from '@apollo/client'
 
 const GET_FOLLOWERS = `
   query($request: FollowersRequest!) {
     followers(request: $request) { 
-             items {
+	   items {
         wallet {
           address
           defaultProfile {
@@ -77,7 +74,6 @@ const GET_FOLLOWERS = `
               }
             }
           }
-          totalAmountOfProfiles
         }
         totalAmountOfTimesFollowed
       }
@@ -86,18 +82,18 @@ const GET_FOLLOWERS = `
         next
         totalCount
       }
-        }
+    }
   }
-`
+`;
 
 export const followers = (profileId) => {
-   return apolloClient.query({
-    query: gql(GET_FOLLOWERS),
-    variables: {
-      request: {
-        profileId,
-        limit: 10
-      },
-    },
-  })
-}
+    return apolloClient.query({
+     query: gql(GET_FOLLOWERS),
+     variables: {
+       request: {
+         profileId,
+         limit: 10
+       },
+     },
+   })
+ }

@@ -525,6 +525,7 @@ const ShowProfile = () => {
       let commentsPub = publications.filter(item=>{
         return item.__typename === "Comment"
       })   
+      console.log("publications",publications)
       console.log("postsPub",postsPub);
       console.log("commentsPub",commentsPub);
       return (
@@ -606,6 +607,95 @@ const ShowProfile = () => {
     }
   }
   
+  const renderComments =()=>{
+    if(publications.length >0 ){   
+      let commentsPub = publications.filter(item=>{
+        return item.__typename === "Comment"
+      })   
+      console.log("publications",publications)
+      console.log("commentsPub",commentsPub);
+
+      return (
+        <List
+        itemLayout="vertical"
+        size="large"
+        pagination={{
+          onChange: page => {
+            console.log(page);
+          },
+          pageSize: 3,
+        }}
+        dataSource={commentsPub}
+        // footer={
+        //   <div>
+        //     <b>ant design</b> footer part
+        //   </div>
+        // }
+        renderItem={item => (
+          <List.Item
+            key={item.id}
+            actions={[
+              // <IconText icon={StarOutlined} text="156" key="list-vertical-star-o" />,
+              // <IconText icon={LikeOutlined} text="156" key="list-vertical-like-o" />,
+              // <Tooltip title="followers">
+              //   <IconText icon={MessageOutlined} text="2" key="list-vertical-message" />
+              // </Tooltip>
+            ]}
+            // extra={
+            //   <img
+            //     width={272}
+            //     alt="logo"
+            //     src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+            //   />
+            // }
+          >
+            <List.Item.Meta
+              avatar={<Avatar src={(!isNil(item.mainPost.profile.picture)) ? item.mainPost.profile.picture.original.url : defImage} />}
+              title={item.mainPost.profile.handle}
+              description={item.mainPost.metadata.content}
+            />
+
+                {/* <List
+                className="comment-list"
+                // header={`${comment.length} replies`}
+                itemLayout="horizontal"
+                dataSource={commentsPub}
+                renderItem={item => (
+                  <li>
+                    <Comment
+                      // actions={[<span key="comment-list-reply-to-0">Reply to</span>]}
+                      author={item.profile.handle}
+                      avatar={(!isNil(item.profile.picture)) ? item.profile.picture.original.url : defImage}
+                      content={item.metadata.content}
+                      // datetime={item.datetime}
+                    />
+                  </li>
+                )}
+              /> */}
+              <List
+                className="comment-list"
+                // header={`${comment.length} replies`}
+                itemLayout="horizontal"
+                >
+                    <Comment
+                    className='nested-comments'
+                      // actions={[<span key="comment-list-reply-to-0">Reply to</span>]}
+                      author={item.profile.handle}
+                      avatar={(!isNil(item.profile.picture)) ? item.profile.picture.original.url : defImage}
+                      content={item.metadata.content}
+                      // datetime={item.datetime}
+                    />                  
+                </List>
+
+
+            {item.content}
+          </List.Item>
+        )}
+      />
+      )
+    }
+  }
+
   const renderMirrors=()=>{
     if(publications.length >0 ){
 
@@ -659,42 +749,68 @@ const ShowProfile = () => {
       )
     }
   }
+
   const handleFollowButton = async(id)=>{
     console.log("handleFollowButton",id)
     const followRequest = [
+      // {
+      //    profile: "0x68",
+      // },
       {
         profile: id,
         followModule: null
       }
     ];
     console.log("followRequest",followRequest)
-    const result = await createFollowTypedData(followRequest);
-    console.log('follow: result', result);
+
   
-    const typedData = result.data.createFollowTypedData.typedData;
-    console.log('follow: typedData', typedData);
+    // const followRequest = [
+    //   {
+    //      profile: "0x01",
+    //   },
+    //   {
+    //      profile: "0x02",
+    //      followModule: {
+    //        feeFollowModule: {
+    //          amount: {
+    //            currency: "0xD40282e050723Ae26Aeb0F77022dB14470f4e011",
+    //            value: "0.01"
+    //          }
+    //        }
+    //      }
+    //    }
+    // ];
+    
+    try {
+      const result = await createFollowTypedData(followRequest);
+      console.log('follow: result', result);
+      const typedData = result.data.createFollowTypedData.typedData;
+      
+      const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
+      const { v, r, s } = splitSignature(signature);
+      
+      const tx = await lensHub.followWithSig({
+        follower: getAddressFromSigner(),
+        profileIds: typedData.value.profileIds,
+        datas: typedData.value.datas,
+        sig: {
+          v,
+          r,
+          s,
+          deadline: typedData.value.deadline,
+        },
+      });
+      // await tx.hash
   
-    const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
-    console.log('follow: signature', signature);
-  
-    const { v, r, s } = splitSignature(signature);
-  
-    const tx = await lensHub.followWithSig({
-      follower: getAddressFromSigner(),
-      profileIds: typedData.value.profileIds,
-      datas: typedData.value.datas,
-      sig: {
-        v,
-        r,
-        s,
-        deadline: typedData.value.deadline,
-      },
-    });
-    console.log('follow: tx hash', tx.hash);
-    return tx.hash;
-    // 0x64464dc0de5aac614a82dfd946fc0e17105ff6ed177b7d677ddb88ec772c52d3
-    // you can look at how to know when its been indexed here: 
-    //   - https://docs.lens.dev/docs/has-transaction-been-indexed
+      console.log(tx.hash);
+      setTxHash(tx.hash)
+      // 0x64464dc0de5aac614a82dfd946fc0e17105ff6ed177b7d677ddb88ec772c52d3
+      // you can look at how to know when its been indexed here: 
+      //   - https://docs.lens.dev/docs/has-transaction-been-indexed
+    } catch (error) {
+      openErrorNotification("Error while following profile", error.message)
+    }
+
   }
 
   const getFollowing = async (address)=>{
@@ -716,8 +832,9 @@ const ShowProfile = () => {
     setShowFollowersModal(!showFollowersModal)
     try {
       let res = await followers(address)
-      let data = get(res,["data","following","items"],[])
+      let data = get(res,["data","followers","items"],[])
       console.log("res-->",res)
+      console.log("res-->data",data)
       setFollowersData(data)  
       // setShowFollowingModal(false)    
       openSuccessNotification("success","Followers profiles succesfully loaded")
@@ -1028,6 +1145,9 @@ const ShowProfile = () => {
                       </TabPane>
                       <TabPane tab="Mirrors" key="2">
                         {renderMirrors()}
+                      </TabPane>
+                      <TabPane tab="Comments" key="3">
+                        {renderComments()}
                       </TabPane>
                     </Tabs>
                   </div>
