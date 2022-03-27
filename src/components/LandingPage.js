@@ -318,7 +318,7 @@ const LandingPage = () => {
             <Menu.Item key="4"><Link to="/profiles"> <TeamOutlined /> &nbsp;&nbsp;My Profiles</Link></Menu.Item>
           </SubMenu>
           <Menu.Item key="6" icon={<SearchOutlined />}>
-            <Link to="explore">Explore</Link>Explore
+            <Link to="explore">Explore Profiles</Link>
           </Menu.Item>
         </Menu>
       </Sider>

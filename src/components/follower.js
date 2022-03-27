@@ -77,11 +77,6 @@ const GET_FOLLOWERS = `
         }
         totalAmountOfTimesFollowed
       }
-      pageInfo {
-        prev
-        next
-        totalCount
-      }
     }
   }
 `;
