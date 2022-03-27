@@ -54,7 +54,7 @@ const RenderProfiles = () => {
 
 
   const handleRenderProfiles = async () => {
-    let obj = { ownedBy: [userAddress || currentAccount], limit: 10 }
+    let obj = { ownedBy: [userAddress || currentAccount], limit: 30 }
     if(obj.ownedBy[0].length>0){
       try {
         const res = await getProfiles(obj)
