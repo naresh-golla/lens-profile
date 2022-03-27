@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { UserDataContext } from "../allContextProvider"
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { UserDataContext ,setUserData } from "../allContextProvider"
 import { LoadingOutlined, EditOutlined, EllipsisOutlined, SettingOutlined, UserAddOutlined, UsergroupAddOutlined, MessageOutlined } from '@ant-design/icons';
 import { Card, Avatar, Spin, Image, Tooltip,Badge } from 'antd';
 import { get, isNil, trimEnd } from "lodash"
@@ -17,7 +17,10 @@ const RenderProfiles = () => {
   const userContextProfiles = useContext(UserDataContext)
   let { userAddress } = userContextProfiles.userData
 
-  let currentAccount = sessionStorage.getItem("currentAccount")
+  // const user_Data_Context = useContext(UserDataContext)
+  console.log("userContextProfiles", userContextProfiles)
+
+  let currentAccount = localStorage.getItem("currentAccount")
 
   useEffect(() => {
     handleRenderProfiles()
@@ -26,6 +29,29 @@ const RenderProfiles = () => {
   // useEffect(()=>{
   //   setProfiles(profileData)
   // },[profileData])
+
+  // setting profiles to global state
+    useEffect(()=>{
+      if(!isNil(profiles) && profiles.length > 0){
+        let obj ={}
+        let convertToObj = profiles.map(item=>{
+          // console.log("item",item.id , ":", item.handle)
+          obj[item.id] = item.handle
+          // return {item.id ,":", item.handle}
+        })
+        // console.log("setProfiles",convertToObj)
+        
+        let convertToArray = Object.entries(obj)
+        console.log("setProfiles--",convertToArray)
+        localStorage.setItem("userHandles",JSON.stringify(convertToArray))
+        userContextProfiles.setUserData(prevState =>({
+          ...prevState,
+          userHandles:convertToArray
+        })) 
+      }
+
+    },[profiles])
+
 
   const handleRenderProfiles = async () => {
     let obj = { ownedBy: [userAddress || currentAccount], limit: 10 }
@@ -50,6 +76,7 @@ const RenderProfiles = () => {
 
   return (
     <div className="nft-wrapper">
+      <h5 class="color-white">Your Profiles</h5>
       {
         profiles === null ? (
           <Spin indicator={antIcon} />
@@ -65,7 +92,7 @@ const RenderProfiles = () => {
                       style={{ width: 250 }}
                       cover={
                         <>
-                          <Link to={item.id} target="_blank" className="link-class"> </Link>
+                          <Link to={item.id} className="link-class"> </Link>
                           <img
                             alt="Cover Pic"
                             src={(!isNil(item.picture)) ? item.picture.original.url : defImage}
@@ -86,8 +113,8 @@ const RenderProfiles = () => {
                              <UsergroupAddOutlined style={{fontSize:"22px"}} key="followers"/>
                            )}                         
                         </Tooltip>,
-                        <Tooltip title="comments">
-                          {item.stats.totalComments > 0 ? (<Badge count={5}><MessageOutlined style={{fontSize:"22px"}}/></Badge>) : (
+                        <Tooltip title="posts">
+                          {item.stats.totalPosts > 0 ? (<Badge count={item.stats.totalPosts}><MessageOutlined style={{fontSize:"22px"}}/></Badge>) : (
                             <MessageOutlined style={{fontSize:"22px"}}/>
                           )}
                         </Tooltip>
@@ -97,7 +124,7 @@ const RenderProfiles = () => {
                       <Meta
                         avatar={<Avatar src={(!isNil(item.picture)) ? item.picture.original.url : defImage} />}
                         title={item.handle}
-                        description={bio}
+                        description={bio || " "}
                       />
                     </Card>
                   )

@@ -14,6 +14,8 @@ import CreateProfile from './components/CreateProfile';
 import RenderProfiles from './components/RenderProfiles';
 import ShowProfile from './components/ShowProfile';
 import Profile from './components/Profile';
+import ExploreModule from './components/ExploreModule';
+import ExpTop from "./components/ExpTop"
 
 ReactDOM.render(
   <React.StrictMode>
@@ -27,7 +29,11 @@ ReactDOM.render(
               <Route path="/profiles" element={<RenderProfiles />} />
               <Route path=":profileId" element={<ShowProfile />} /> 
             </Route>
-            {/* <Route path="explore" element={<ExploreModule />} />    */}
+            <Route path="explore" element={<ExpTop />}>
+              <Route path="/explore" element={<ExploreModule />} />
+              <Route path=":exploreId" element={<ShowProfile />} />               
+            </Route>   
+
           </Route>
         </Routes>
       </BrowserRouter>      

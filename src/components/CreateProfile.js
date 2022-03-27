@@ -85,6 +85,7 @@ const CreateProfile = () => {
 
     return (
         <div className="nft-wrapper">
+          <h5 class="color-white u-ml-40">Create Profile</h5>
           <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
             <Form.Item
               name={['user', 'handle']}

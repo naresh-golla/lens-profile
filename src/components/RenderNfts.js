@@ -15,7 +15,7 @@ const RenderNfts = () => {
     console.log("user_Data_Context--NFT-->", user_Data_Context)
     
     let {userAddress} = user_Data_Context.userData
-   let currentAccount = sessionStorage.getItem("currentAccount")
+   let currentAccount = localStorage.getItem("currentAccount")
 
     // useEffect(()=>{
     //     setNft(nftData)
@@ -49,6 +49,7 @@ const RenderNfts = () => {
 
     return (
         <div className="nft-wrapper">
+        <h5 class="color-white u-ml-40">Your Nft's</h5>
             {   
              nft === null ? (
                 <Spin indicator={antIcon} />

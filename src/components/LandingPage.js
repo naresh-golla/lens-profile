@@ -70,10 +70,9 @@ const LandingPage = () => {
     }, [delay]);
   };
 
-
   useInterval(() => {
     let refreshToken = localStorage.getItem("refreshToken")
-    currentAccount && refreshToken && console.log(refreshAuth(refreshToken))
+    currentAccount && refreshToken && refreshAuth(refreshToken)
   }, 600000);
 
   // const openSuccessNotification = (message,description) => {
@@ -92,8 +91,6 @@ const LandingPage = () => {
   //   });
   // };
 
-
-
   useEffect(() => {
     checkIfWalletIsConnected();
   }, [])
@@ -103,7 +100,7 @@ const LandingPage = () => {
       ...prevState,
       userAddress:currentAccount
     }))
-    sessionStorage.setItem("currentAccount",currentAccount)
+    localStorage.setItem("currentAccount",currentAccount)
   },[currentAccount])
 
   const handleWalletConnect = () => {
@@ -321,7 +318,7 @@ const LandingPage = () => {
             <Menu.Item key="4"><Link to="/profiles"> <TeamOutlined /> &nbsp;&nbsp;My Profiles</Link></Menu.Item>
           </SubMenu>
           <Menu.Item key="6" icon={<SearchOutlined />}>
-            <Link to="/explore">Explore</Link>Explore
+            <Link to="explore">Explore</Link>Explore
           </Menu.Item>
         </Menu>
       </Sider>

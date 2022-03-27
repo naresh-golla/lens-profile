@@ -1,3 +1,17 @@
+
+@font-face {
+    font-family: SegoeUI;
+    src: url("./assets/SEGOEUI.TTF");
+}
+  
+body{
+  font-family: SegoeUI !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+h1,h2{
+  font-weight: 900 !important;
+}
 .header-logo-wallet{
   display: flex;
   justify-content: space-between;
@@ -71,12 +85,12 @@
 
 .header-logo-wallet .logo {
   font-size: 30px;
-  font-weight: 800;
-    background: linear-gradient(135deg, #FFCC33 0%, #E233FF 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -webkit-box-decoration-break: clone;
+  font-weight: 900 !important;
+  background: linear-gradient(135deg, #FFCC33 0%, #E233FF 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-box-decoration-break: clone;
 }
 .header-logo-wallet .wallet .ant-card{
   height: 55px;
@@ -127,7 +141,8 @@
 .nft-wrapper>div>img{
   border-radius: 10px;
 }
-.nft-wrapper .NoNft{
+.nft-wrapper .NoNft,
+ .container .NoNft{
   text-align: center;
   width: 100%;
   padding-top: 80px;
@@ -138,7 +153,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   -webkit-box-decoration-break: clone;
-}
+} 
 .buttonSection {
   display: flex;
 }
@@ -167,7 +182,7 @@
   width: 100%;
   top: 0px;
   left: 0px;
-  height: 250px;
+  height: 439px;
 }
 .editButton{
   right: 0px;
@@ -201,6 +216,55 @@
   left: 50%;
   top: 50%;
 } 
+.ant-card-meta-description{
+  height: 66px;
+}
+
+/* .ant-list-item-meta-description,
+.ant-list-item, */
+.color-white,
+h5.color-white{
+  color: #fff !important;
+}
+.ant-list-item-meta-description{
+  color: rgb(0 21 41) !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+.profile-wrapper  .ant-card-cover{
+  height: 250px !important;
+}
+.ant-list-item-meta-title > a{
+  font-size: 18px;
+    font-weight: 900 !important;
+    background: linear-gradient(135deg, #FFCC33 0%, #E233FF 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-box-decoration-break: clone;
+}
+.headline-txt{
+
+  background: linear-gradient(135deg, #2F80ED 0%, #B2FFDA 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-box-decoration-break: clone;
+}
+.sp-bg{
+  background: #001529;
+}
+.ant-list-pagination{
+  margin-bottom: 24px;
+}
+.flex-comments{
+  display: flex;
+    justify-content: space-between;
+    color: #1890ff;
+}
+.flex-comments div,.followers,.following{
+  cursor: pointer !important;
+}
 
 @media screen and (max-width:780px){
   .header-logo-wallet{
@@ -239,11 +303,31 @@
     padding-left: 80px;
     padding-top: 100px;
   }
+  .profile-wrapper.ppl{
+    padding-left: 10px !important;
+    padding-top: 10px !important;
+  }
   .showProfileDiv{
     padding-left: 40px;
     padding-top: 100px;
   }
   .nft-wrapper>.ant-form {
     margin-top: 130px;
+  }
+  .u-mt-100{
+    margin-top:100px;
+    margin-left:75px;
+    }
+  .u-mt-40{
+    margin-top:100px;
+    margin-left:40px;
+    }
 }
-}
+
+
+
+
+
+
+
+

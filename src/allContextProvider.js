@@ -6,7 +6,8 @@ const UserDataProvider = (props) => {
   const [userData, setUserData] = useState({
       nftData:null,
       profileData:null,
-      userAddress:null
+      userAddress:null,
+      userHandles:null
   });
   // the state that we'll be storing the user info
 
