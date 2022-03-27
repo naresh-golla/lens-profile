@@ -4,7 +4,7 @@
     src: url("./assets/SEGOEUI.TTF");
 }
   
-body{
+#root,body,.ant-menu,.ant-modal-root{
   font-family: SegoeUI !important;
   font-weight: 500 !important;
   line-height: 1.5 !important;
