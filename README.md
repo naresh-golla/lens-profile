@@ -2,11 +2,13 @@
 
 Live project url [https://lens-profile.vercel.app/](https://lens-profile.vercel.app/).
 
+dApp screenshot urls [https://gateway.pinata.cloud/ipfs/QmfRysRgzF3CZicWKA6gne5KNvJ6PfNmrsKn299p9E4E1K](https://gateway.pinata.cloud/ipfs/QmfRysRgzF3CZicWKA6gne5KNvJ6PfNmrsKn299p9E4E1K)
+
 ## `metamask is required to run this dApp`
 
 ### `Screen Shots`
 
-`dApp screenshot urls [https://lens-profile.vercel.app/](https://lens-profile.vercel.app/)
+`
 dApp screenshot urls [https://gateway.pinata.cloud/ipfs/QmfRysRgzF3CZicWKA6gne5KNvJ6PfNmrsKn299p9E4E1K]
 dApp screenshot urls [https://gateway.pinata.cloud/ipfs/QmeAXnUpdrQP5rW6PPJ3rZnXX1zkHXoLjz5GXpWjeLbp17]
 dApp screenshot urls [https://gateway.pinata.cloud/ipfs/QmczRQkDHD4bUwHyp5xfVrbVvMYnp7ZoVDuc2ktboJsi29]
