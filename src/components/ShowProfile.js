@@ -753,12 +753,9 @@ const ShowProfile = () => {
   const handleFollowButton = async(id)=>{
     console.log("handleFollowButton",id)
     const followRequest = [
-      // {
-      //    profile: "0x68",
-      // },
       {
-        profile: id,
-        followModule: null
+         profile: "0x68",
+         followModule: null
       }
     ];
     console.log("followRequest",followRequest)
@@ -784,26 +781,44 @@ const ShowProfile = () => {
     try {
       const result = await createFollowTypedData(followRequest);
       console.log('follow: result', result);
-      const typedData = result.data.createFollowTypedData.typedData;
+      // console.log(result.data.createFollowTypedData.typedData);
+      // const typedData = result.data.createFollowTypedData.typedData;
       
-      const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
+      // const signature = await signTypedData (typedData.domain , typedData.types, typedData.value);
+      // const {v,r,s} = splitSignature(signature);
+      // const lensHub =await getLensHub()
+      // const tx = await lensHub.followWithSig({
+      //   follower : getAddress(),
+      //   profileIds : typedData.value.profileIds,
+      //   datas : typedData.value.datas,
+      //   sig : {
+      //     v,
+      //     r,
+      //     s,
+      //     deadline : typedData.value.deadline,
+      //   },
+      // });
+      const {domain,types,value} = result && result.data.createFollowTypedData.typedData;
+      
+      const signature = await signedTypeData(domain, types, value);
       const { v, r, s } = splitSignature(signature);
       
       const tx = await lensHub.followWithSig({
         follower: getAddressFromSigner(),
-        profileIds: typedData.value.profileIds,
-        datas: typedData.value.datas,
+        profileIds: value?.profileIds,
+        datas: value?.datas,
         sig: {
           v,
           r,
           s,
-          deadline: typedData.value.deadline,
+          deadline: value?.deadline,
         },
       });
       // await tx.hash
   
       console.log(tx.hash);
       setTxHash(tx.hash)
+      // invalid address or ENS name (argument="name", value=undefined, code=INVALID_ARGUMENT, version=contracts/5.6.0)
       // 0x64464dc0de5aac614a82dfd946fc0e17105ff6ed177b7d677ddb88ec772c52d3
       // you can look at how to know when its been indexed here: 
       //   - https://docs.lens.dev/docs/has-transaction-been-indexed
@@ -829,9 +844,11 @@ const ShowProfile = () => {
   }
   
   const getFollowers = async (address)=>{
+    console.log("getFollowers",address);
+    // return
     setShowFollowersModal(!showFollowersModal)
     try {
-      let res = await followers(address)
+      let res = await followers(address.id)
       let data = get(res,["data","followers","items"],[])
       console.log("res-->",res)
       console.log("res-->data",data)
@@ -886,7 +903,7 @@ const ShowProfile = () => {
                       <span>{idData[0].location}</span>
                     </p>
                     <div className="stats row">
-                      <div className="stat col-xs-4 followers" onClick={()=>getFollowers(idData[0].ownedBy)} style={{ paddingRight: "50px" }}>
+                      <div className="stat col-xs-4 followers" onClick={()=>getFollowers(idData[0])} style={{ paddingRight: "50px" }}>
                         <p className="number-stat">{idData[0].stats.totalFollowers}</p>
                         <p className="desc-stat">Followers</p>
                       </div>
@@ -1128,10 +1145,10 @@ const ShowProfile = () => {
                         renderItem={item => (
                           <List.Item>                            
                             <List.Item.Meta
-                              avatar={<Avatar src={(!isNil(item.profile.picture)) ? item.profile.picture.original.url : defImage} />}
-                              title={<a href="javasript:viod(0)"><span>{item.profile.handle}</span></a>}
+                              avatar={<Avatar src={(!isNil(item.wallet.defaultProfile)) && (!isNil(item.wallet.defaultProfile.picture)) ? (item.wallet.defaultProfile.picture.original.url) : (defImage)} />}
+                              title={<a href="javasript:viod(0)"><span>{item.wallet.address}</span></a>}
                               // title={<a href="javasript:viod(0)"><span onClick={()=>handleChangeProfile(item.profile.id)}>{item.profile.handle}</span></a>}
-                              description={item.profile.bio && item.profile.bio.slice(0,50) + "..."}
+                              description={(!isNil(item.wallet.defaultProfile)) && item.wallet.defaultProfile.bio && item.wallet.defaultProfile.bio.slice(0,50) + "..."}
                             />      
                           </List.Item>
                         )}
